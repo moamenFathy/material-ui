@@ -10,6 +10,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import Todo from "./Todo";
 
 const TodoList = () => {
   return (
@@ -20,11 +21,12 @@ const TodoList = () => {
             Tasks
             <Divider />
           </Typography>
-          <ToggleButtonGroup sx={{ mt: "30px" }}>
+          <ToggleButtonGroup sx={{ my: "30px" }}>
             <ToggleButton>All</ToggleButton>
             <ToggleButton>Done</ToggleButton>
             <ToggleButton>Unfinished</ToggleButton>
           </ToggleButtonGroup>
+          <Todo />
         </CardContent>
         <CardActions>
           <Button size="small">Learn More</Button>
