@@ -4,7 +4,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-const Todo = () => {
+const Todo = ({ id, title, details }) => {
   return (
     <>
       <Card
@@ -13,16 +13,17 @@ const Todo = () => {
           minWidth: 275,
           backgroundColor: "#283593",
           color: "white",
+          mb: 2,
         }}
       >
         <CardContent>
           <Grid container alignItems="center">
             <Grid size={8}>
               <Typography variant="h5" sx={{ textAlign: "left" }}>
-                First Task
+                {title}
               </Typography>
               <Typography variant="h6" sx={{ textAlign: "left" }}>
-                First Task Details
+                {details}
               </Typography>
             </Grid>
             <Grid container justifyContent="space-around" size={4}>

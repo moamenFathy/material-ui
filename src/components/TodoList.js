@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Typography,
-  CardActions,
   Button,
   Divider,
   ToggleButton,
@@ -13,9 +12,14 @@ import {
   TextField,
 } from "@mui/material";
 import Todo from "./Todo";
-import { Height } from "@mui/icons-material";
+import { v4 as uuidv4 } from "uuid";
 
 const TodoList = () => {
+  const todos = [
+    { id: uuidv4(), title: "First Task", details: "First Task Details" },
+    { id: uuidv4(), title: "Second Task", details: "Seconde Task Details" },
+    { id: uuidv4(), title: "Third Task", details: "Third Task Details" },
+  ];
   return (
     <Container align="center" maxWidth="sm">
       <Card sx={{ minWidth: 275 }}>
@@ -29,7 +33,9 @@ const TodoList = () => {
             <ToggleButton>Done</ToggleButton>
             <ToggleButton>Unfinished</ToggleButton>
           </ToggleButtonGroup>
-          <Todo />
+          {todos.map(({ id, title, details }) => (
+            <Todo title={title} details={details} key={id} />
+          ))}
           <Grid container mt={2} spacing={2}>
             <Grid size={8}>
               <TextField label="Add Your Task" variant="outlined" fullWidth />
