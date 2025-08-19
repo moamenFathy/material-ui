@@ -9,8 +9,11 @@ import {
   Divider,
   ToggleButton,
   ToggleButtonGroup,
+  Grid,
+  TextField,
 } from "@mui/material";
 import Todo from "./Todo";
+import { Height } from "@mui/icons-material";
 
 const TodoList = () => {
   return (
@@ -27,10 +30,17 @@ const TodoList = () => {
             <ToggleButton>Unfinished</ToggleButton>
           </ToggleButtonGroup>
           <Todo />
+          <Grid container mt={2} spacing={2}>
+            <Grid size={8}>
+              <TextField label="Add Your Task" variant="outlined" fullWidth />
+            </Grid>
+            <Grid size={4} sx={{ Height: 100 }}>
+              <Button variant="contained" fullWidth sx={{ height: "100%" }}>
+                Add
+              </Button>
+            </Grid>
+          </Grid>
         </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Container>
   );
