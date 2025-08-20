@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Container,
   Card,
@@ -17,22 +17,25 @@ import { TodosContext } from "../contexts/TodosContext";
 
 const TodoList = () => {
   const { todos, setTodos } = useContext(TodosContext);
-
   const [todoVal, setTodoVal] = useState("");
 
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem("todos"));
+    setTodos(storedTodos);
+  }, []);
+
   const handleClick = () => {
+    if (todoVal === "") return;
     const newTodo = {
       id: uuidv4(),
       title: todoVal,
       details: "",
       isCompleted: false,
     };
-    setTodos([...todos, newTodo]);
+    const updatedTodos = [...todos, newTodo];
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setTodoVal("");
-  };
-
-  const handleCheck = (todoId) => {
-    // alert("Alert from parent (todo List)" + todoId);
   };
 
   const handleChange = (e) => {
@@ -53,12 +56,13 @@ const TodoList = () => {
             <ToggleButton>Unfinished</ToggleButton>
           </ToggleButtonGroup>
           {todos.map((todo) => (
-            <Todo key={todo.id} todo={todo} handleCheck={handleCheck} />
+            <Todo key={todo.id} todo={todo} />
           ))}
           <Grid container mt={2} spacing={2}>
             <Grid size={8}>
               <TextField
                 label="Add Your Task"
+                required
                 variant="outlined"
                 value={todoVal}
                 onChange={handleChange}

@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogContentText,
   Button,
+  TextField,
 } from "@mui/material";
 // Icons
 import CheckIcon from "@mui/icons-material/Check";
@@ -20,55 +21,155 @@ import { TodosContext } from "../contexts/TodosContext";
 
 const Todo = ({ todo: { title, details, isCompleted, id } }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [updatedTodo, setUpdatedTodo] = useState({ title, details });
   const { todos, setTodos } = useContext(TodosContext);
 
   const handleCheckClick = () => {
-    setTodos(
-      todos.map((t) => {
-        return t.id === id ? { ...t, isCompleted: !t.isCompleted } : t;
-      })
-    );
+    const updatedTodos = todos.map((t) => {
+      return t.id === id ? { ...t, isCompleted: !t.isCompleted } : t;
+    });
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
   const handleDeleteClick = () => {
     setShowDeleteDialog(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleUpdateClick = () => {
+    setShowUpdateDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
     setShowDeleteDialog(false);
   };
 
+  const handleCloseUpdateDialog = () => {
+    setShowUpdateDialog(false);
+  };
+
   const handleDeleteTodo = () => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+  };
+
+  const handleUpdateTodo = () => {
+    if (updatedTodo.title === "") return;
+    const updatedTodos = todos.map((t) => {
+      return t.id === id
+        ? { ...t, title: updatedTodo.title, details: updatedTodo.details }
+        : t;
+    });
+    setTodos(updatedTodos);
+    setShowUpdateDialog(false);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
   return (
     <>
-      {/* Dialog */}
+      {/* Delete Dialog */}
       <Dialog
-        onClose={handleCloseDialog}
+        onClose={handleCloseDeleteDialog}
         open={showDeleteDialog}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleDeleteTodo();
+          console.log(e.key);
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
           Are You Sure To Delete This Task ?
         </DialogTitle>
+
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             You Can't Retrieve The Task Back After Deletion
           </DialogContentText>
         </DialogContent>
+
         <DialogActions>
-          <Button variant="outlined" onClick={handleCloseDialog}>
+          <Button variant="outlined" onClick={handleCloseDeleteDialog}>
             close
           </Button>
+
           <Button variant="contained" autoFocus onClick={handleDeleteTodo}>
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-      {/*=== Dialog === */}
+      {/*=== Delete Dialog === */}
+
+      {/* Update Dialog */}
+      <Dialog
+        onClose={handleCloseDeleteDialog}
+        open={showUpdateDialog}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleUpdateTodo();
+          console.log(e.key);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Are You Sure To Delete This Task ?
+        </DialogTitle>
+
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="email"
+            label="Task Title"
+            type="email"
+            fullWidth
+            variant="standard"
+            value={updatedTodo.title}
+            onChange={(e) => {
+              setUpdatedTodo({ ...updatedTodo, title: e.target.value });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleUpdateTodo();
+              console.log(e.key);
+            }}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            name="email"
+            label="Task Details"
+            type="email"
+            fullWidth
+            variant="standard"
+            value={updatedTodo.details}
+            onChange={(e) => {
+              setUpdatedTodo({ ...updatedTodo, details: e.target.value });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleUpdateTodo();
+              console.log(e.key);
+            }}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button variant="outlined" onClick={handleCloseUpdateDialog}>
+            close
+          </Button>
+
+          <Button variant="contained" autoFocus onClick={handleUpdateTodo}>
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/*=== Update Dialog === */}
+
       <Card
         className="card"
         sx={{
@@ -88,7 +189,9 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
                 {details}
               </Typography>
             </Grid>
+
             <Grid container justifyContent="space-around" size={4}>
+              {/* Check Task Button */}
               <IconButton
                 sx={{
                   ":hover": {
@@ -102,6 +205,9 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
               >
                 <CheckIcon />
               </IconButton>
+              {/* ===Check Task Button=== */}
+
+              {/* Edit Task Button */}
               <IconButton
                 sx={{
                   ":hover": {
@@ -111,9 +217,13 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
                   backgroundColor: "white",
                   border: "solid #1769aa 3px",
                 }}
+                onClick={handleUpdateClick}
               >
                 <ModeEditOutlinedIcon />
               </IconButton>
+              {/* ===Edit Task Button=== */}
+
+              {/* Delete Task Button */}
               <IconButton
                 sx={{
                   ":hover": {
@@ -128,6 +238,7 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
               >
                 <DeleteOutlineOutlinedIcon />
               </IconButton>
+              {/* ===Delete Task Button=== */}
             </Grid>
           </Grid>
         </CardContent>
