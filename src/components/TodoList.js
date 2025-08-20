@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Container,
   Card,
@@ -13,30 +13,11 @@ import {
 } from "@mui/material";
 import Todo from "./Todo";
 import { v4 as uuidv4 } from "uuid";
-
-const initialTodos = [
-  {
-    id: uuidv4(),
-    title: "First Task",
-    details: "First Task Details",
-    isCompleted: false,
-  },
-  {
-    id: uuidv4(),
-    title: "Second Task",
-    details: "Seconde Task Details",
-    isCompleted: false,
-  },
-  {
-    id: uuidv4(),
-    title: "Third Task",
-    details: "Third Task Details",
-    isCompleted: false,
-  },
-];
+import { TodosContext } from "../contexts/TodosContext";
 
 const TodoList = () => {
-  const [todos, setTodos] = useState(initialTodos);
+  const { todos, setTodos } = useContext(TodosContext);
+
   const [todoVal, setTodoVal] = useState("");
 
   const handleClick = () => {
@@ -48,6 +29,10 @@ const TodoList = () => {
     };
     setTodos([...todos, newTodo]);
     setTodoVal("");
+  };
+
+  const handleCheck = (todoId) => {
+    // alert("Alert from parent (todo List)" + todoId);
   };
 
   const handleChange = (e) => {
@@ -67,8 +52,8 @@ const TodoList = () => {
             <ToggleButton>Done</ToggleButton>
             <ToggleButton>Unfinished</ToggleButton>
           </ToggleButtonGroup>
-          {todos.map(({ id, title, details }) => (
-            <Todo title={title} details={details} key={id} />
+          {todos.map((todo) => (
+            <Todo key={todo.id} todo={todo} handleCheck={handleCheck} />
           ))}
           <Grid container mt={2} spacing={2}>
             <Grid size={8}>

@@ -1,12 +1,74 @@
-import { Card, CardContent, Typography, Grid, IconButton } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  Button,
+} from "@mui/material";
 // Icons
 import CheckIcon from "@mui/icons-material/Check";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { useContext, useState } from "react";
+import { TodosContext } from "../contexts/TodosContext";
 
-const Todo = ({ id, title, details }) => {
+const Todo = ({ todo: { title, details, isCompleted, id } }) => {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { todos, setTodos } = useContext(TodosContext);
+
+  const handleCheckClick = () => {
+    setTodos(
+      todos.map((t) => {
+        return t.id === id ? { ...t, isCompleted: !t.isCompleted } : t;
+      })
+    );
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteTodo = () => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
   return (
     <>
+      {/* Dialog */}
+      <Dialog
+        onClose={handleCloseDialog}
+        open={showDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Are You Sure To Delete This Task ?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You Can't Retrieve The Task Back After Deletion
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleCloseDialog}>
+            close
+          </Button>
+          <Button variant="contained" autoFocus onClick={handleDeleteTodo}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/*=== Dialog === */}
       <Card
         className="card"
         sx={{
@@ -32,10 +94,11 @@ const Todo = ({ id, title, details }) => {
                   ":hover": {
                     backgroundColor: "#c5c5c5",
                   },
-                  color: "#8bc34a",
-                  backgroundColor: "white",
+                  color: isCompleted ? "white" : "#8bc34a",
+                  backgroundColor: isCompleted ? "#8bc34a" : "white",
                   border: "solid #8bc34a 3px",
                 }}
+                onClick={handleCheckClick}
               >
                 <CheckIcon />
               </IconButton>
@@ -61,6 +124,7 @@ const Todo = ({ id, title, details }) => {
                   backgroundColor: "white",
                   border: "solid #b23c17 3px",
                 }}
+                onClick={handleDeleteClick}
               >
                 <DeleteOutlineOutlinedIcon />
               </IconButton>
