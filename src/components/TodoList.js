@@ -21,17 +21,11 @@ const TodoList = () => {
   const [displayTodos, setDisplayTodos] = useState("all");
 
   useEffect(() => {
-    const storedTodos = localStorage.getItem("todos");
-    if (storedTodos && storedTodos !== "null" && storedTodos !== "undefined") {
-      const parsedTodos = JSON.parse(storedTodos);
-      if (Array.isArray(parsedTodos)) {
-        setTodos(parsedTodos);
-      }
-    }
-  }, [setTodos]);
+    const storedTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
+    setTodos(storedTodos);
+  }, []);
 
   const handleClick = () => {
-    if (todoVal === "") return;
     const newTodo = {
       id: uuidv4(),
       title: todoVal,
@@ -63,7 +57,7 @@ const TodoList = () => {
   return (
     <Container align="center" maxWidth="sm">
       <Card sx={{ minWidth: 275 }}>
-        <CardContent>
+        <CardContent sx={{ maxHeight: "60vh", overflow: "auto" }}>
           <Typography variant="h2">
             Tasks
             <Divider />
@@ -79,6 +73,8 @@ const TodoList = () => {
           </ToggleButtonGroup>
           {rendedTodos &&
             rendedTodos.map((todo) => <Todo key={todo.id} todo={todo} />)}
+        </CardContent>
+        <CardContent>
           <Grid container mt={2} spacing={2}>
             <Grid size={8}>
               <TextField
@@ -97,6 +93,7 @@ const TodoList = () => {
               <Button
                 variant="contained"
                 fullWidth
+                disabled={!todoVal}
                 sx={{ height: "100%" }}
                 onClick={handleClick}
               >

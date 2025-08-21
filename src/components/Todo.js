@@ -180,7 +180,13 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
         <CardContent>
           <Grid container alignItems="center">
             <Grid size={8}>
-              <Typography variant="h5" sx={{ textAlign: "left" }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: "left",
+                  textDecoration: isCompleted ? "line-through" : "none",
+                }}
+              >
                 {title}
               </Typography>
               <Typography variant="h6" sx={{ textAlign: "left" }}>
