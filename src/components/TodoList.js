@@ -20,9 +20,14 @@ const TodoList = () => {
   const [todoVal, setTodoVal] = useState("");
 
   useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem("todos"));
-    setTodos(storedTodos);
-  }, []);
+    const storedTodos = localStorage.getItem("todos");
+    if (storedTodos && storedTodos !== "null" && storedTodos !== "undefined") {
+      const parsedTodos = JSON.parse(storedTodos);
+      if (Array.isArray(parsedTodos)) {
+        setTodos(parsedTodos);
+      }
+    }
+  }, [setTodos]);
 
   const handleClick = () => {
     if (todoVal === "") return;
@@ -32,7 +37,7 @@ const TodoList = () => {
       details: "",
       isCompleted: false,
     };
-    const updatedTodos = [...todos, newTodo];
+    const updatedTodos = [...(todos || []), newTodo];
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setTodoVal("");
@@ -55,9 +60,7 @@ const TodoList = () => {
             <ToggleButton>Done</ToggleButton>
             <ToggleButton>Unfinished</ToggleButton>
           </ToggleButtonGroup>
-          {todos.map((todo) => (
-            <Todo key={todo.id} todo={todo} />
-          ))}
+          {todos && todos.map((todo) => <Todo key={todo.id} todo={todo} />)}
           <Grid container mt={2} spacing={2}>
             <Grid size={8}>
               <TextField

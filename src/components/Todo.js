@@ -26,7 +26,7 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
   const { todos, setTodos } = useContext(TodosContext);
 
   const handleCheckClick = () => {
-    const updatedTodos = todos.map((t) => {
+    const updatedTodos = (todos || []).map((t) => {
       return t.id === id ? { ...t, isCompleted: !t.isCompleted } : t;
     });
     setTodos(updatedTodos);
@@ -50,14 +50,14 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
   };
 
   const handleDeleteTodo = () => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    const updatedTodos = (todos || []).filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
   const handleUpdateTodo = () => {
     if (updatedTodo.title === "") return;
-    const updatedTodos = todos.map((t) => {
+    const updatedTodos = (todos || []).map((t) => {
       return t.id === id
         ? { ...t, title: updatedTodo.title, details: updatedTodo.details }
         : t;
@@ -104,7 +104,7 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
 
       {/* Update Dialog */}
       <Dialog
-        onClose={handleCloseDeleteDialog}
+        onClose={handleCloseUpdateDialog}
         open={showUpdateDialog}
         onKeyDown={(e) => {
           if (e.key === "Enter") handleUpdateTodo();
@@ -113,9 +113,7 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          Are You Sure To Delete This Task ?
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Update This Task</DialogTitle>
 
         <DialogContent>
           <TextField

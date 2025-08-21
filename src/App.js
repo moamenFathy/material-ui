@@ -28,7 +28,7 @@ const initialTodos = [
 function App() {
   const [todos, setTodos] = useState(initialTodos);
   return (
-    <TodosContext value={{ todos, setTodos }}>
+    <TodosContext.Provider value={{ todos, setTodos }}>
       <div
         style={{
           display: "flex",
@@ -40,7 +40,7 @@ function App() {
       >
         <TodoList />
       </div>
-    </TodosContext>
+    </TodosContext.Provider>
   );
 }
 
