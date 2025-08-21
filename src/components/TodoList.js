@@ -18,6 +18,7 @@ import { TodosContext } from "../contexts/TodosContext";
 const TodoList = () => {
   const { todos, setTodos } = useContext(TodosContext);
   const [todoVal, setTodoVal] = useState("");
+  const [displayTodos, setDisplayTodos] = useState("all");
 
   useEffect(() => {
     const storedTodos = localStorage.getItem("todos");
@@ -47,6 +48,18 @@ const TodoList = () => {
     setTodoVal(e.target.value);
   };
 
+  const changeDisplayType = (e) => {
+    setDisplayTodos(e.target.value);
+    console.log(e.target.value);
+  };
+
+  let rendedTodos = todos;
+  const completedTodos = todos.filter((t) => t.isCompleted);
+  const notCompletedTodos = todos.filter((t) => !t.isCompleted);
+
+  if (displayTodos === "done") rendedTodos = completedTodos;
+  else if (displayTodos === "unfinished") rendedTodos = notCompletedTodos;
+
   return (
     <Container align="center" maxWidth="sm">
       <Card sx={{ minWidth: 275 }}>
@@ -55,12 +68,17 @@ const TodoList = () => {
             Tasks
             <Divider />
           </Typography>
-          <ToggleButtonGroup sx={{ my: "30px" }}>
-            <ToggleButton>All</ToggleButton>
-            <ToggleButton>Done</ToggleButton>
-            <ToggleButton>Unfinished</ToggleButton>
+          <ToggleButtonGroup
+            sx={{ my: "30px" }}
+            value={displayTodos}
+            onChange={changeDisplayType}
+          >
+            <ToggleButton value="all">All</ToggleButton>
+            <ToggleButton value="done">Done</ToggleButton>
+            <ToggleButton value="unfinished">Unfinished</ToggleButton>
           </ToggleButtonGroup>
-          {todos && todos.map((todo) => <Todo key={todo.id} todo={todo} />)}
+          {rendedTodos &&
+            rendedTodos.map((todo) => <Todo key={todo.id} todo={todo} />)}
           <Grid container mt={2} spacing={2}>
             <Grid size={8}>
               <TextField
