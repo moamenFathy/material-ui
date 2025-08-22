@@ -19,10 +19,11 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { useContext, useState } from "react";
 import { TodosContext } from "../contexts/TodosContext";
 
-const Todo = ({ todo: { title, details, isCompleted, id } }) => {
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-  const [updatedTodo, setUpdatedTodo] = useState({ title, details });
+const Todo = ({
+  todo: { title, details, isCompleted, id },
+  showDelete,
+  showUpdate,
+}) => {
   const { todos, setTodos } = useContext(TodosContext);
 
   const handleCheckClick = () => {
@@ -33,141 +34,12 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
-  const handleDeleteClick = () => {
-    setShowDeleteDialog(true);
-  };
-
   const handleUpdateClick = () => {
-    setShowUpdateDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setShowDeleteDialog(false);
-  };
-
-  const handleCloseUpdateDialog = () => {
-    setShowUpdateDialog(false);
-  };
-
-  const handleDeleteTodo = () => {
-    const updatedTodos = (todos || []).filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
-  };
-
-  const handleUpdateTodo = () => {
-    if (updatedTodo.title === "") return;
-    const updatedTodos = (todos || []).map((t) => {
-      return t.id === id
-        ? { ...t, title: updatedTodo.title, details: updatedTodo.details }
-        : t;
-    });
-    setTodos(updatedTodos);
-    setShowUpdateDialog(false);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    showUpdate(id);
   };
 
   return (
     <>
-      {/* Delete Dialog */}
-      <Dialog
-        onClose={handleCloseDeleteDialog}
-        open={showDeleteDialog}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleDeleteTodo();
-          console.log(e.key);
-        }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Are You Sure To Delete This Task ?
-        </DialogTitle>
-
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            You Can't Retrieve The Task Back After Deletion
-          </DialogContentText>
-        </DialogContent>
-
-        <DialogActions>
-          <Button variant="outlined" onClick={handleCloseDeleteDialog}>
-            close
-          </Button>
-
-          <Button variant="contained" autoFocus onClick={handleDeleteTodo}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/*=== Delete Dialog === */}
-
-      {/* Update Dialog */}
-      <Dialog
-        onClose={handleCloseUpdateDialog}
-        open={showUpdateDialog}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleUpdateTodo();
-          console.log(e.key);
-        }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Update This Task</DialogTitle>
-
-        <DialogContent>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="Task Title"
-            type="email"
-            fullWidth
-            variant="standard"
-            value={updatedTodo.title}
-            onChange={(e) => {
-              setUpdatedTodo({ ...updatedTodo, title: e.target.value });
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleUpdateTodo();
-              console.log(e.key);
-            }}
-          />
-
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            name="email"
-            label="Task Details"
-            type="email"
-            fullWidth
-            variant="standard"
-            value={updatedTodo.details}
-            onChange={(e) => {
-              setUpdatedTodo({ ...updatedTodo, details: e.target.value });
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleUpdateTodo();
-              console.log(e.key);
-            }}
-          />
-        </DialogContent>
-
-        <DialogActions>
-          <Button variant="outlined" onClick={handleCloseUpdateDialog}>
-            close
-          </Button>
-
-          <Button variant="contained" autoFocus onClick={handleUpdateTodo}>
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/*=== Update Dialog === */}
-
       <Card
         className="card"
         sx={{
@@ -238,7 +110,9 @@ const Todo = ({ todo: { title, details, isCompleted, id } }) => {
                   backgroundColor: "white",
                   border: "solid #b23c17 3px",
                 }}
-                onClick={handleDeleteClick}
+                onClick={() => {
+                  showDelete(id);
+                }}
               >
                 <DeleteOutlineOutlinedIcon />
               </IconButton>
