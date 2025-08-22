@@ -1,26 +1,13 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  Button,
-  TextField,
-} from "@mui/material";
+import { Card, CardContent, Typography, Grid, IconButton } from "@mui/material";
 // Icons
 import CheckIcon from "@mui/icons-material/Check";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { TodosContext } from "../contexts/TodosContext";
 
 const Todo = ({
-  todo: { title, details, isCompleted, id },
+  todo: { title, description, isCompleted, id },
   showDelete,
   showUpdate,
 }) => {
@@ -32,6 +19,7 @@ const Todo = ({
     });
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    console.log(updatedTodos);
   };
 
   const handleUpdateClick = () => {
@@ -62,7 +50,7 @@ const Todo = ({
                 {title}
               </Typography>
               <Typography variant="h6" sx={{ textAlign: "left" }}>
-                {details}
+                {description}
               </Typography>
             </Grid>
 

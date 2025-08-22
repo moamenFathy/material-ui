@@ -28,26 +28,22 @@ const TodoList = () => {
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [updatedTodo, setUpdatedTodo] = useState({
     title: "",
-    details: "",
+    description: "",
   });
   const [displayTodos, setDisplayTodos] = useState("all");
-
-  useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
-    setTodos(storedTodos);
-  }, []);
 
   const handleClick = () => {
     const newTodo = {
       id: uuidv4(),
       title: todoVal,
-      details: "",
+      description: "",
       isCompleted: false,
     };
     const updatedTodos = [...(todos || []), newTodo];
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setTodoVal("");
+    console.log(todos);
   };
 
   const handleChange = (e) => {
@@ -65,7 +61,6 @@ const TodoList = () => {
 
   const openDeleteDialog = (id) => {
     setDialogId(id);
-    alert(id);
     setShowDeleteDialog(true);
   };
 
@@ -74,7 +69,7 @@ const TodoList = () => {
     if (todoToUpdate) {
       setUpdatedTodo({
         title: todoToUpdate.title,
-        details: todoToUpdate.details,
+        description: todoToUpdate.description,
       });
     }
     setDialogId(id);
@@ -87,6 +82,7 @@ const TodoList = () => {
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setShowDeleteDialog(false);
+    console.log(updatedTodos);
   };
 
   let rendedTodos = todos;
@@ -109,12 +105,17 @@ const TodoList = () => {
     if (updatedTodo.title === "") return;
     const updatedTodos = (todos || []).map((t) => {
       return t.id === dialogId
-        ? { ...t, title: updatedTodo.title, details: updatedTodo.details }
+        ? {
+            ...t,
+            title: updatedTodo.title,
+            description: updatedTodo.description,
+          }
         : t;
     });
     setTodos(updatedTodos);
     setShowUpdateDialog(false);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    console.log(updatedTodo);
   };
 
   return (
@@ -195,9 +196,9 @@ const TodoList = () => {
             type="email"
             fullWidth
             variant="standard"
-            value={updatedTodo.details}
+            value={updatedTodo.description}
             onChange={(e) => {
-              setUpdatedTodo({ ...updatedTodo, details: e.target.value });
+              setUpdatedTodo({ ...updatedTodo, description: e.target.value });
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleUpdateTodo();
