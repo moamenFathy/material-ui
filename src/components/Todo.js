@@ -4,22 +4,17 @@ import CheckIcon from "@mui/icons-material/Check";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { useContext } from "react";
-import { TodosContext } from "../contexts/TodosContext";
+import { TodosContext } from "../contexts/todosContext";
 
 const Todo = ({
   todo: { title, description, isCompleted, id },
   showDelete,
   showUpdate,
 }) => {
-  const { todos, setTodos } = useContext(TodosContext);
+  const { dispatch } = useContext(TodosContext);
 
   const handleCheckClick = () => {
-    const updatedTodos = (todos || []).map((t) => {
-      return t.id === id ? { ...t, isCompleted: !t.isCompleted } : t;
-    });
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
-    console.log(updatedTodos);
+    dispatch({ type: "toggled", payload: { id } });
   };
 
   const handleUpdateClick = () => {

@@ -17,11 +17,10 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Todo from "./Todo";
-import { v4 as uuidv4 } from "uuid";
-import { TodosContext } from "../contexts/TodosContext";
+import { TodosContext } from "../contexts/todosContext";
 
 const TodoList = () => {
-  const { todos, setTodos } = useContext(TodosContext);
+  const { todos, dispatch } = useContext(TodosContext);
   const [todoVal, setTodoVal] = useState("");
   const [dialogId, setDialogId] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -32,18 +31,13 @@ const TodoList = () => {
   });
   const [displayTodos, setDisplayTodos] = useState("all");
 
+  useEffect(() => {
+    dispatch({ type: "get" });
+  }, [dispatch]);
+
   const handleClick = () => {
-    const newTodo = {
-      id: uuidv4(),
-      title: todoVal,
-      description: "",
-      isCompleted: false,
-    };
-    const updatedTodos = [...(todos || []), newTodo];
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({ type: "added", payload: { title: todoVal } });
     setTodoVal("");
-    console.log(todos);
   };
 
   const handleChange = (e) => {
@@ -77,12 +71,8 @@ const TodoList = () => {
   };
 
   const handleDeleteTodo = () => {
-    console.log(dialogId);
-    const updatedTodos = (todos || []).filter((todo) => todo.id !== dialogId);
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({ type: "deleted", payload: { id: dialogId } });
     setShowDeleteDialog(false);
-    console.log(updatedTodos);
   };
 
   let rendedTodos = todos;
@@ -102,19 +92,8 @@ const TodoList = () => {
   };
 
   const handleUpdateTodo = () => {
-    if (updatedTodo.title === "") return;
-    const updatedTodos = (todos || []).map((t) => {
-      return t.id === dialogId
-        ? {
-            ...t,
-            title: updatedTodo.title,
-            description: updatedTodo.description,
-          }
-        : t;
-    });
-    setTodos(updatedTodos);
+    dispatch({ type: "updated", payload: { updatedTodo, id: dialogId } });
     setShowUpdateDialog(false);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
     console.log(updatedTodo);
   };
 
