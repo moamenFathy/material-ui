@@ -1,6 +1,6 @@
 import "./App.css";
 import TodoList from "./components/TodoList";
-import TodosProvider from "./contexts/todosContext";
+import TodosProvider from "./contexts/TodosContext";
 
 function App() {
   return (

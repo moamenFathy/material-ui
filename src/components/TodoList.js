@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Todo from "./Todo";
-import { TodosContext } from "../contexts/todosContext";
+import { TodosContext } from "../contexts/TodosContext";
 
 const TodoList = () => {
   const { todos, dispatch } = useContext(TodosContext);
